@@ -1,10 +1,13 @@
 package pl.kurs.schooldiary2.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import pl.kurs.schooldiary2.model.Identificationable;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-public class GenericManagementService<T, R extends JpaRepository<T, Long>> implements IManagementService<T>{
+public class GenericManagementService<T extends Identificationable, R extends JpaRepository<T, Long>> implements IManagementService<T>{
 
     private R repository;
 
@@ -14,8 +17,11 @@ public class GenericManagementService<T, R extends JpaRepository<T, Long>> imple
 
     @Override
     public T add(T entity) {
-        repository.save(entity);
-        return null;//todo zakonczenie
+        return repository.save(
+                Optional.ofNullable(entity)
+                .filter(x -> Objects.isNull(x.getId()))
+                .orElseThrow(() -> new RuntimeException("Bad entity!"))
+        );
     }
 
     @Override
