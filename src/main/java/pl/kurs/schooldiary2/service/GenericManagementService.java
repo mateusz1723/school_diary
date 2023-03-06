@@ -31,7 +31,11 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
 
     @Override
     public T edit(T entity) {
-        return null;
+        return repository.save(
+                Optional.ofNullable(entity)
+                .filter(x -> Objects.nonNull(x.getId()))
+                .orElseThrow(() -> new IllegalArgumentException("Bad entity"))
+        );
     }
 
     @Override
