@@ -26,7 +26,7 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
 
     @Override
     public void delete(Long id) {
-
+        repository.deleteById(id);
     }
 
     @Override
