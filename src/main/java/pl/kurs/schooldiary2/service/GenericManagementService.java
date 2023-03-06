@@ -40,7 +40,7 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
 
     @Override
     public T get(Long id) {
-        return null;
+        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is no entity with this id"));
     }
 
     @Override
