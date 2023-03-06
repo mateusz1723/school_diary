@@ -45,6 +45,6 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
 
     @Override
     public List<T> getAll() {
-        return null;
+        return repository.findAll();
     }
 }
