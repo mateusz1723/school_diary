@@ -1,5 +1,6 @@
 package pl.kurs.schooldiary2.service;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kurs.schooldiary2.model.Identificationable;
 
@@ -26,7 +27,11 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("THere is no entity with id");
+        }
     }
 
     @Override
@@ -34,13 +39,13 @@ public class GenericManagementService<T extends Identificationable, R extends Jp
         return repository.save(
                 Optional.ofNullable(entity)
                 .filter(x -> Objects.nonNull(x.getId()))
-                .orElseThrow(() -> new IllegalArgumentException("Bad entity"))
+                .orElseThrow(() -> new RuntimeException("Bad entity"))
         );
     }
 
     @Override
     public T get(Long id) {
-        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is no entity with this id"));
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("There is no entity with id: " + id));
     }
 
     @Override
